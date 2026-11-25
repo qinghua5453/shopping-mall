@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopmall.mapper.SysAdminMapper">
+
+  <select id="selectByUsername" resultType="com.shopmall.entity.SysAdmin">
+    SELECT id, username, password, nickname, avatar_url, email, status,
+           pwd_reset_required, last_login_at, last_login_ip, version, created_at, updated_at
+    FROM sys_admin
+    WHERE username = #{username}
+    LIMIT 1
+  </select>
+
+  <select id="selectById" resultType="com.shopmall.entity.SysAdmin">
+    SELECT id, username, password, nickname, avatar_url, email, status,
+           pwd_reset_required, last_login_at, last_login_ip, version, created_at, updated_at
+    FROM sys_admin
+    WHERE id = #{id}
+  </select>
+
+  <select id="selectRoleCodes" resultType="string">
+    SELECT r.code
+    FROM sys_role r
+    JOIN sys_admin_role ar ON ar.role_id = r.id
+    WHERE ar.admin_id = #{adminId}
+      AND r.status = 1
+  </select>
+
+  <insert id="insert" parameterType="com.shopmall.entity.SysAdmin">
+    INSERT INTO sys_admin
+      (id, username, password, nickname, status, pwd_reset_required)
+    VALUES
+      (#{id}, #{username}, #{password}, #{nickname}, #{status}, #{pwdResetRequired})
+  </insert>
+
+  <insert id="insertSuperAdminRole">
+    INSERT IGNORE INTO sys_admin_role (admin_id, role_id)
+    SELECT #{adminId}, id
+    FROM sys_role
+    WHERE code = 'SUPER_ADMIN' AND status = 1
+  </insert>
+
+  <update id="updateLoginInfo">
+    UPDATE sys_admin
+    SET last_login_at = #{loginAt}, last_login_ip = #{ip}
+    WHERE id = #{id}
+  </update>
+</mapper>
