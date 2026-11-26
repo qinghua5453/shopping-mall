@@ -6,15 +6,9 @@ export interface ApiResponse<T> {
   timestamp: string
 }
 
-export interface PageQuery {
-  page: number
-  pageSize: number
-}
-
 export interface PageResult<T> {
-  records: T[]
   page: number
   pageSize: number
   total: number
-  pages: number
+  list: T[]
 }

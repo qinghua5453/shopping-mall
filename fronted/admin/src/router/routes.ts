@@ -46,25 +46,25 @@ export const businessRoutes: RouteRecordRaw[] = [
   {
     path: 'coupon/templates',
     name: 'CouponTemplates',
-    component: () => import('@/views/PlaceholderView.vue'),
+    component: () => import('@/views/coupon/CouponTemplateListView.vue'),
     meta: { title: '券模板', requiresAuth: true, permission: 'coupon:template:view', menu: true },
   },
   {
     path: 'coupon/codes',
     name: 'CouponCodes',
-    component: () => import('@/views/PlaceholderView.vue'),
+    component: () => import('@/views/coupon/CouponCodeView.vue'),
     meta: { title: '券码管理', requiresAuth: true, permission: 'coupon:code:view', menu: true },
   },
   {
     path: 'coupon/instances',
     name: 'CouponInstances',
-    component: () => import('@/views/PlaceholderView.vue'),
+    component: () => import('@/views/coupon/CouponInstanceListView.vue'),
     meta: { title: '用户券', requiresAuth: true, permission: 'coupon:instance:view', menu: true },
   },
   {
     path: 'coupon/rules',
     name: 'CouponRules',
-    component: () => import('@/views/PlaceholderView.vue'),
+    component: () => import('@/views/coupon/CouponStackRuleView.vue'),
     meta: { title: '叠加规则', requiresAuth: true, permission: 'coupon:rule:view', menu: true },
   },
 ]
