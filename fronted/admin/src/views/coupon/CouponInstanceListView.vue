@@ -19,10 +19,10 @@ const total = ref(0)
 const page = ref(1)
 const pageSize = ref(10)
 
-const query = reactive<{ memberId: number | ''; templateId: number | ''; status: number | '' }>({
-  memberId: '',
-  templateId: '',
-  status: '',
+const query = reactive<{ memberId: number | null; templateId: number | null; status: number | null }>({
+  memberId: null,
+  templateId: null,
+  status: null,
 })
 
 // ===== 模板下拉（定向发券用）=====
@@ -50,9 +50,9 @@ async function fetchList() {
       templateId?: number
       status?: number
     } = { page: page.value, pageSize: pageSize.value }
-    if (query.memberId !== '') params.memberId = query.memberId
-    if (query.templateId !== '') params.templateId = query.templateId
-    if (query.status !== '') params.status = query.status
+    if (query.memberId != null) params.memberId = query.memberId
+    if (query.templateId != null) params.templateId = query.templateId
+    if (query.status != null) params.status = query.status
     const res = await couponApi.pageInstances(params)
     list.value = res.list
     total.value = res.total
@@ -204,7 +204,7 @@ onMounted(() => {
           />
         </el-select>
         <el-button type="primary" @click="() => { page = 1; fetchList() }">查询</el-button>
-        <el-button @click="() => { Object.assign(query, { memberId: '', templateId: '', status: '' }); page = 1; fetchList() }">
+        <el-button @click="() => { Object.assign(query, { memberId: null, templateId: null, status: null }); page = 1; fetchList() }">
           重置
         </el-button>
         <el-button type="primary" :icon="UserFilled" class="ml-auto" @click="openGrant">

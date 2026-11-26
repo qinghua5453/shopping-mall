@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { Plus, RefreshRight, Search } from '@element-plus/icons-vue'
@@ -107,6 +107,22 @@ function defaultForm(): CouponTemplateForm {
   }
 }
 const form = reactive<CouponTemplateForm>(defaultForm())
+
+// el-date-picker datetimerange 不支持 v-model 数组字面量，用 computed 代理
+const validRange = computed<string[]>({
+  get: () => [form.validStart || '', form.validEnd || ''],
+  set: (v) => {
+    form.validStart = v?.[0] ?? ''
+    form.validEnd = v?.[1] ?? ''
+  },
+})
+const receiveRange = computed<string[]>({
+  get: () => [form.receiveStart || '', form.receiveEnd || ''],
+  set: (v) => {
+    form.receiveStart = v?.[0] ?? ''
+    form.receiveEnd = v?.[1] ?? ''
+  },
+})
 
 const formRules: FormRules = {
   name: [{ required: true, message: '请输入券名称', trigger: 'blur' }],
@@ -520,7 +536,7 @@ onMounted(() => {
 
         <el-form-item v-if="form.validityType === 1" label="有效区间">
           <el-date-picker
-            v-model="[form.validStart, form.validEnd]"
+            v-model="validRange"
             type="datetimerange"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
@@ -532,7 +548,7 @@ onMounted(() => {
 
         <el-form-item label="领取时间窗">
           <el-date-picker
-            v-model="[form.receiveStart, form.receiveEnd]"
+            v-model="receiveRange"
             type="datetimerange"
             start-placeholder="不限制"
             end-placeholder="不限制"
