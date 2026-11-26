@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopmall.mapper.CouponTemplateMapper">
+
+  <resultMap id="BaseResult" type="com.shopmall.entity.CouponTemplate">
+    <id property="id" column="id"/>
+    <result property="templateNo" column="template_no"/>
+    <result property="couponType" column="coupon_type"/>
+    <result property="scopeType" column="scope_type"/>
+    <result property="scopeValues" column="scope_values"/>
+    <result property="thresholdAmount" column="threshold_amount"/>
+    <result property="discountAmount" column="discount_amount"/>
+    <result property="discountRate" column="discount_rate"/>
+    <result property="maxDiscountAmount" column="max_discount_amount"/>
+    <result property="totalQuantity" column="total_quantity"/>
+    <result property="issuedQuantity" column="issued_quantity"/>
+    <result property="perUserLimit" column="per_user_limit"/>
+    <result property="validityType" column="validity_type"/>
+    <result property="validStart" column="valid_start"/>
+    <result property="validEnd" column="valid_end"/>
+    <result property="validDays" column="valid_days"/>
+    <result property="receiveStart" column="receive_start"/>
+    <result property="receiveEnd" column="receive_end"/>
+    <result property="stackGroup" column="stack_group"/>
+    <result property="stackable" column="stackable"/>
+    <result property="refundPolicy" column="refund_policy"/>
+    <result property="receiveChannels" column="receive_channels"/>
+    <result property="sortWeight" column="sort_weight"/>
+    <result property="createdBy" column="created_by"/>
+    <result property="updatedBy" column="updated_by"/>
+  </resultMap>
+
+  <sql id="columns">
+    id, template_no, name, coupon_type, scope_type, scope_values,
+    threshold_amount, discount_amount, discount_rate, max_discount_amount,
+    total_quantity, issued_quantity, per_user_limit, validity_type,
+    valid_start, valid_end, valid_days, receive_start, receive_end,
+    stack_group, stackable, refund_policy, receive_channels, sort_weight,
+    status, remark, version, created_by, updated_by, created_at, updated_at
+  </sql>
+
+  <select id="selectById" resultMap="BaseResult">
+    SELECT <include refid="columns"/>
+    FROM coupon_template WHERE id = #{id}
+  </select>
+
+  <select id="selectByTemplateNo" resultMap="BaseResult">
+    SELECT <include refid="columns"/>
+    FROM coupon_template WHERE template_no = #{templateNo}
+  </select>
+
+  <select id="selectPage" resultMap="BaseResult">
+    SELECT <include refid="columns"/>
+    FROM coupon_template
+    <where>
+      <if test="status != null">AND status = #{status}</if>
+      <if test="keyword != null and keyword != ''">
+        AND (name LIKE CONCAT('%', #{keyword}, '%') OR template_no LIKE CONCAT('%', #{keyword}, '%'))
+      </if>
+    </where>
+    ORDER BY sort_weight DESC, id DESC
+    LIMIT #{offset}, #{pageSize}
+  </select>
+
+  <select id="countPage" resultType="int">
+    SELECT COUNT(*) FROM coupon_template
+    <where>
+      <if test="status != null">AND status = #{status}</if>
+      <if test="keyword != null and keyword != ''">
+        AND (name LIKE CONCAT('%', #{keyword}, '%') OR template_no LIKE CONCAT('%', #{keyword}, '%'))
+      </if>
+    </where>
+  </select>
+
+  <insert id="insert" parameterType="com.shopmall.entity.CouponTemplate" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO coupon_template
+      (template_no, name, coupon_type, scope_type, scope_values,
+       threshold_amount, discount_amount, discount_rate, max_discount_amount,
+       total_quantity, issued_quantity, per_user_limit, validity_type,
+       valid_start, valid_end, valid_days, receive_start, receive_end,
+       stack_group, stackable, refund_policy, receive_channels, sort_weight,
+       status, remark, version, created_by, updated_by)
+    VALUES
+      (#{templateNo}, #{name}, #{couponType}, #{scopeType}, #{scopeValues},
+       #{thresholdAmount}, #{discountAmount}, #{discountRate}, #{maxDiscountAmount},
+       #{totalQuantity}, #{issuedQuantity}, #{perUserLimit}, #{validityType},
+       #{validStart}, #{validEnd}, #{validDays}, #{receiveStart}, #{receiveEnd},
+       #{stackGroup}, #{stackable}, #{refundPolicy}, #{receiveChannels}, #{sortWeight},
+       #{status}, #{remark}, #{version}, #{createdBy}, #{updatedBy})
+  </insert>
+
+  <update id="update" parameterType="com.shopmall.entity.CouponTemplate">
+    UPDATE coupon_template
+    SET name = #{name},
+        coupon_type = #{couponType},
+        scope_type = #{scopeType},
+        scope_values = #{scopeValues},
+        threshold_amount = #{thresholdAmount},
+        discount_amount = #{discountAmount},
+        discount_rate = #{discountRate},
+        max_discount_amount = #{maxDiscountAmount},
+        total_quantity = #{totalQuantity},
+        per_user_limit = #{perUserLimit},
+        validity_type = #{validityType},
+        valid_start = #{validStart},
+        valid_end = #{validEnd},
+        valid_days = #{validDays},
+        receive_start = #{receiveStart},
+        receive_end = #{receiveEnd},
+        stack_group = #{stackGroup},
+        stackable = #{stackable},
+        refund_policy = #{refundPolicy},
+        receive_channels = #{receiveChannels},
+        sort_weight = #{sortWeight},
+        remark = #{remark},
+        version = version + 1,
+        updated_by = #{updatedBy}
+    WHERE id = #{id}
+      AND version = #{version}
+      AND status IN (0, 2)
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM coupon_template WHERE id = #{id} AND status = 0
+  </delete>
+
+  <update id="updateStatus">
+    UPDATE coupon_template
+    SET status = #{status}, version = version + 1
+    WHERE id = #{id} AND version = #{currentVersion}
+  </update>
+
+  <update id="incrementIssued">
+    UPDATE coupon_template
+    SET issued_quantity = issued_quantity + 1, version = version + 1
+    WHERE id = #{id}
+      AND version = #{currentVersion}
+      AND (total_quantity = 0 OR issued_quantity &lt; total_quantity)
+  </update>
+
+  <select id="countReceiveRecords" resultType="int">
+    SELECT COUNT(*) FROM coupon_receive_record WHERE template_id = #{templateId}
+  </select>
+
+  <select id="countCodeByTemplate" resultType="int">
+    SELECT COUNT(*) FROM coupon_code WHERE template_id = #{templateId}
+  </select>
+</mapper>

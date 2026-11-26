@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopmall.mapper.CouponCodeMapper">
+
+  <resultMap id="BaseResult" type="com.shopmall.entity.CouponCode">
+    <id property="id" column="id"/>
+    <result property="batchId" column="batch_id"/>
+    <result property="templateId" column="template_id"/>
+    <result property="memberId" column="member_id"/>
+    <result property="usedTime" column="used_time"/>
+  </resultMap>
+
+  <select id="selectByCode" resultMap="BaseResult">
+    SELECT id, code, batch_id, template_id, status, member_id, used_time, created_at
+    FROM coupon_code WHERE code = #{code}
+  </select>
+
+  <select id="selectPageByBatch" resultMap="BaseResult">
+    SELECT id, code, batch_id, template_id, status, member_id, used_time, created_at
+    FROM coupon_code
+    WHERE batch_id = #{batchId}
+    <if test="status != null">AND status = #{status}</if>
+    ORDER BY id ASC
+    LIMIT #{offset}, #{pageSize}
+  </select>
+
+  <select id="countByBatch" resultType="int">
+    SELECT COUNT(*) FROM coupon_code
+    WHERE batch_id = #{batchId}
+    <if test="status != null">AND status = #{status}</if>
+  </select>
+
+  <insert id="insert" parameterType="com.shopmall.entity.CouponCode" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO coupon_code (code, batch_id, template_id, status)
+    VALUES (#{code}, #{batchId}, #{templateId}, #{status})
+  </insert>
+
+  <insert id="batchInsert" parameterType="list">
+    INSERT INTO coupon_code (code, batch_id, template_id, status)
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (#{item.code}, #{item.batchId}, #{item.templateId}, #{item.status})
+    </foreach>
+  </insert>
+
+  <update id="updateStatus">
+    UPDATE coupon_code SET status = #{newStatus}
+    WHERE id = #{id} AND status = #{expected}
+  </update>
+
+  <select id="countByTemplate" resultType="int">
+    SELECT COUNT(*) FROM coupon_code WHERE template_id = #{templateId}
+  </select>
+</mapper>

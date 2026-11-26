@@ -9,6 +9,8 @@
 | 文档 | 内容 |
 | --- | --- |
 | [05-simplified-mvc-plan.md](docs/05-simplified-mvc-plan.md) | 当前已实施的简化版架构、接口契约和实施步骤 |
+| [06-coupon-design.md](docs/06-coupon-design.md) | **待实施**：优惠券域模型、状态机、接口与实施计划 |
+| [sql/V2__create_coupon_schema.sql](docs/sql/V2__create_coupon_schema.sql) | **待评审**：优惠券 7 张表 DDL、叠加规则与权限种子 |
 | [01-architecture.md](docs/01-architecture.md) | 原生产级多模块架构参考 |
 | [02-database.md](docs/02-database.md) | 原数据库设计参考 |
 | [03-api.md](docs/03-api.md) | 原完整 API 契约参考 |

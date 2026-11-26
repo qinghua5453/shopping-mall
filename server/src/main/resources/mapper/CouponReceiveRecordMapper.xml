@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopmall.mapper.CouponReceiveRecordMapper">
+
+  <select id="selectByRequestNo" resultType="com.shopmall.entity.CouponReceiveRecord">
+    SELECT * FROM coupon_receive_record WHERE request_no = #{requestNo}
+  </select>
+
+  <select id="countByTemplate" resultType="int">
+    SELECT COUNT(*) FROM coupon_receive_record WHERE template_id = #{templateId}
+  </select>
+
+  <insert id="insert" parameterType="com.shopmall.entity.CouponReceiveRecord" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO coupon_receive_record
+      (request_no, member_id, template_id, channel, source, success, fail_reason)
+    VALUES
+      (#{requestNo}, #{memberId}, #{templateId}, #{channel}, #{source}, #{success}, #{failReason})
+  </insert>
+
+  <update id="updateSuccess">
+    UPDATE coupon_receive_record
+    SET success = 1, coupon_id = #{couponId}, fail_reason = ''
+    WHERE id = #{id}
+  </update>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopmall.mapper.CouponCodeBatchMapper">
+
+  <select id="selectById" resultType="com.shopmall.entity.CouponCodeBatch">
+    SELECT * FROM coupon_code_batch WHERE id = #{id}
+  </select>
+
+  <select id="selectByBatchNo" resultType="com.shopmall.entity.CouponCodeBatch">
+    SELECT * FROM coupon_code_batch WHERE batch_no = #{batchNo}
+  </select>
+
+  <select id="selectByTemplate" resultType="com.shopmall.entity.CouponCodeBatch">
+    SELECT * FROM coupon_code_batch
+    WHERE template_id = #{templateId}
+    ORDER BY id DESC
+  </select>
+
+  <insert id="insert" parameterType="com.shopmall.entity.CouponCodeBatch" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO coupon_code_batch (batch_no, template_id, total, status, created_by)
+    VALUES (#{batchNo}, #{templateId}, #{total}, #{status}, #{createdBy})
+  </insert>
+</mapper>

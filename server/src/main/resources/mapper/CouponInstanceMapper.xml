@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopmall.mapper.CouponInstanceMapper">
+
+  <resultMap id="BaseResult" type="com.shopmall.entity.CouponInstance">
+    <id property="id" column="id"/>
+    <result property="couponNo" column="coupon_no"/>
+    <result property="templateId" column="template_id"/>
+    <result property="memberId" column="member_id"/>
+    <result property="receiveChannel" column="receive_channel"/>
+    <result property="receiveTime" column="receive_time"/>
+    <result property="validStart" column="valid_start"/>
+    <result property="validEnd" column="valid_end"/>
+    <result property="usedTime" column="used_time"/>
+    <result property="orderNo" column="order_no"/>
+    <result property="lockOrderNo" column="lock_order_no"/>
+    <result property="discountAmount" column="discount_amount"/>
+  </resultMap>
+
+  <sql id="columns">
+    id, coupon_no, template_id, member_id, status, source,
+    receive_channel, receive_time, valid_start, valid_end,
+    used_time, order_no, lock_order_no, discount_amount,
+    version, created_at, updated_at
+  </sql>
+
+  <select id="selectById" resultMap="BaseResult">
+    SELECT <include refid="columns"/> FROM coupon_instance WHERE id = #{id}
+  </select>
+
+  <select id="selectByCouponNo" resultMap="BaseResult">
+    SELECT <include refid="columns"/> FROM coupon_instance WHERE coupon_no = #{couponNo}
+  </select>
+
+  <select id="selectPage" resultMap="BaseResult">
+    SELECT <include refid="columns"/>
+    FROM coupon_instance
+    <where>
+      <if test="memberId != null">AND member_id = #{memberId}</if>
+      <if test="templateId != null">AND template_id = #{templateId}</if>
+      <if test="status != null">AND status = #{status}</if>
+    </where>
+    ORDER BY created_at DESC, id DESC
+    LIMIT #{offset}, #{pageSize}
+  </select>
+
+  <select id="countPage" resultType="int">
+    SELECT COUNT(*) FROM coupon_instance
+    <where>
+      <if test="memberId != null">AND member_id = #{memberId}</if>
+      <if test="templateId != null">AND template_id = #{templateId}</if>
+      <if test="status != null">AND status = #{status}</if>
+    </where>
+  </select>
+
+  <insert id="insert" parameterType="com.shopmall.entity.CouponInstance" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO coupon_instance
+      (coupon_no, template_id, member_id, status, source,
+       receive_channel, receive_time, valid_start, valid_end,
+       discount_amount, version)
+    VALUES
+      (#{couponNo}, #{templateId}, #{memberId}, #{status}, #{source},
+       #{receiveChannel}, #{receiveTime}, #{validStart}, #{validEnd},
+       #{discountAmount}, #{version})
+  </insert>
+
+  <update id="updateStatus">
+    UPDATE coupon_instance
+    SET status = #{status}, version = version + 1
+    WHERE id = #{id} AND version = #{currentVersion}
+  </update>
+
+  <select id="countByMemberAndTemplate" resultType="int">
+    SELECT COUNT(*) FROM coupon_instance
+    WHERE member_id = #{memberId} AND template_id = #{templateId} AND status != 4
+  </select>
+</mapper>
