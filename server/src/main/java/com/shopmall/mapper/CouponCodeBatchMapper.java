@@ -12,5 +12,7 @@ public interface CouponCodeBatchMapper {
 
     List<CouponCodeBatch> selectByTemplate(@Param("templateId") Long templateId);
 
+    List<CouponCodeBatch> selectRecent(@Param("limit") int limit);
+
     int insert(CouponCodeBatch batch);
 }

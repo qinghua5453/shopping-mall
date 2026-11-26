@@ -58,6 +58,9 @@ export const couponApi = {
   }) {
     return api.get<PageResult<CouponCode>>(`${BASE}/codes`, { params })
   },
+  listBatches(limit = 50) {
+    return api.get<CouponCodeBatch[]>(`${BASE}/codes/batches`, { params: { limit } })
+  },
   voidCode(code: string) {
     return api.post<void>(`${BASE}/codes/void`, null, {
       params: { code },

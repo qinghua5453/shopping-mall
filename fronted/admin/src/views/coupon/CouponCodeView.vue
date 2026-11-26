@@ -4,7 +4,7 @@ import { Plus } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 import { couponApi } from '@/api/coupon'
-import type { CouponCode, CouponTemplate } from '@/types/coupon'
+import type { CouponCode, CouponCodeBatch, CouponTemplate } from '@/types/coupon'
 import { CODE_STATUS_LABEL, CODE_STATUS_TYPE } from '@/types/coupon'
 import { getErrorMessage } from '@/utils/error'
 
@@ -26,7 +26,15 @@ const generateVisible = ref(false)
 const generateLoading = ref(false)
 const generateCount = ref(100)
 const selectedTemplateId = ref<number | null>(null)
-const latestBatch = ref<{ id: number; batchNo: string; templateId: number; total: number; createdAt: string } | null>(null)
+const batches = ref<CouponCodeBatch[]>([])
+
+async function loadBatches() {
+  try {
+    batches.value = await couponApi.listBatches(200)
+  } catch (err) {
+    ElMessage.error(getErrorMessage(err))
+  }
+}
 
 async function loadTemplates() {
   templateLoading.value = true
@@ -59,10 +67,10 @@ async function handleGenerate() {
   generateLoading.value = true
   try {
     const batch = await couponApi.generateCodes(selectedTemplateId.value, { count: generateCount.value })
-    latestBatch.value = batch
     query.batchId = batch.id
     generateVisible.value = false
     page.value = 1
+    await loadBatches()
     await fetchList()
     ElMessage.success(`生成成功：批次 ${batch.batchNo}，共 ${batch.total} 张`)
   } catch (err) {
@@ -122,6 +130,7 @@ async function handleVoid(row: CouponCode) {
 
 onMounted(() => {
   void loadTemplates()
+  void loadBatches()
 })
 </script>
 
@@ -138,16 +147,10 @@ onMounted(() => {
           @change="handleBatchChange"
         >
           <el-option
-            v-if="latestBatch"
-            :label="`${latestBatch.batchNo}（最近生成）`"
-            :value="latestBatch.id"
-          />
-          <el-option
-            v-for="t in templates"
-            :key="t.id"
-            :label="`模板 ${t.name} / ${t.templateNo}`"
-            :value="t.id"
-            :disabled="!!latestBatch && t.id === latestBatch.id"
+            v-for="b in batches"
+            :key="b.id"
+            :label="`${b.batchNo}（${b.total} 张）`"
+            :value="b.id"
           />
         </el-select>
         <el-select
@@ -173,7 +176,7 @@ onMounted(() => {
         type="info"
         :closable="false"
         show-icon
-        title="请先生成券码批次或选择已有批次。后端暂未提供批次列表接口，生成后批次 ID 会自动填入查询框。"
+        title="请先生成券码批次或选择已有批次。"
         style="margin-bottom: 16px"
       />
 

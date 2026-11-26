@@ -5,6 +5,7 @@ import com.shopmall.dto.CouponCodeBatchResponse;
 import com.shopmall.dto.CouponCodeGenerateRequest;
 import com.shopmall.dto.PageResult;
 import com.shopmall.entity.CouponCode;
+import com.shopmall.entity.CouponCodeBatch;
 import com.shopmall.interceptor.LoginInterceptor;
 import com.shopmall.service.CouponCodeService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,13 @@ public class CouponCodeController {
     ) {
         Long adminId = (Long) request.getAttribute(LoginInterceptor.ADMIN_ID_ATTRIBUTE);
         return ApiResponse.success(codeService.generate(templateId, req, adminId));
+    }
+
+    @GetMapping("/batches")
+    public ApiResponse<java.util.List<CouponCodeBatch>> batches(
+            @RequestParam(defaultValue = "50") int limit
+    ) {
+        return ApiResponse.success(codeService.listBatches(limit));
     }
 
     @GetMapping

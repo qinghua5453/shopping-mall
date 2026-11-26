@@ -61,6 +61,11 @@ public class CouponCodeService {
         return CouponCodeBatchResponse.from(batch);
     }
 
+    public List<CouponCodeBatch> listBatches(int limit) {
+        if (limit <= 0 || limit > 200) limit = 50;
+        return batchMapper.selectRecent(limit);
+    }
+
     public PageResult<CouponCode> pageByBatch(Long batchId, Integer status, int page, int pageSize) {
         CouponCodeBatch b = batchMapper.selectById(batchId);
         if (b == null) throw new BizException(ErrorCode.BATCH_NOT_FOUND);

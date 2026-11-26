@@ -16,6 +16,12 @@
     ORDER BY id DESC
   </select>
 
+  <select id="selectRecent" resultType="com.shopmall.entity.CouponCodeBatch">
+    SELECT * FROM coupon_code_batch
+    ORDER BY id DESC
+    LIMIT #{limit}
+  </select>
+
   <insert id="insert" parameterType="com.shopmall.entity.CouponCodeBatch" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO coupon_code_batch (batch_no, template_id, total, status, created_by)
     VALUES (#{batchNo}, #{templateId}, #{total}, #{status}, #{createdBy})
