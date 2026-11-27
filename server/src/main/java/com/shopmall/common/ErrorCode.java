@@ -17,6 +17,16 @@ public enum ErrorCode {
     REFRESH_TOKEN_INVALID(40108, "刷新令牌无效或已被重放", HttpStatus.UNAUTHORIZED),
     AUDIENCE_MISMATCH(40109, "身份类型不匹配", HttpStatus.FORBIDDEN),
     NOT_FOUND(40400, "资源不存在", HttpStatus.NOT_FOUND),
+    // ---- 权限/系统管理相关 ----
+    ROLE_NOT_FOUND(40301, "角色不存在", HttpStatus.NOT_FOUND),
+    PERMISSION_NOT_FOUND(40302, "权限不存在", HttpStatus.NOT_FOUND),
+    ROLE_BUILTIN_LOCKED(40303, "内置角色不可删除或修改", HttpStatus.CONFLICT),
+    ADMIN_SELF_PROTECT(40304, "不可删除自己或移除自身超级管理员角色", HttpStatus.CONFLICT),
+    ROLE_HAS_ADMINS(40305, "角色下存在管理员，不可删除", HttpStatus.CONFLICT),
+    OLD_PASSWORD_INVALID(40306, "原密码不正确", HttpStatus.BAD_REQUEST),
+    USERNAME_DUPLICATE(40307, "登录名已存在", HttpStatus.CONFLICT),
+    ROLE_CODE_DUPLICATE(40308, "角色编码已存在", HttpStatus.CONFLICT),
+    LAST_SUPER_ADMIN(40309, "不可禁用或删除最后一个超级管理员", HttpStatus.CONFLICT),
     // ---- 优惠券相关 ----
     COUPON_NOT_FOUND(42000, "优惠券不存在", HttpStatus.NOT_FOUND),
     COUPON_NOT_STARTED(42001, "活动未开始", HttpStatus.CONFLICT),

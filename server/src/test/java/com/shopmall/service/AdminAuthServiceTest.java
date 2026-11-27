@@ -7,7 +7,6 @@ import com.shopmall.dto.LoginRequest;
 import com.shopmall.dto.LoginResponse;
 import com.shopmall.entity.SysAdmin;
 import com.shopmall.mapper.SysAdminMapper;
-import com.shopmall.mapper.SysPermissionMapper;
 import com.shopmall.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +31,9 @@ class AdminAuthServiceTest {
     @Mock
     private SysAdminMapper adminMapper;
     @Mock
-    private SysPermissionMapper permissionMapper;
-    @Mock
     private AdminSessionService sessionService;
+    @Mock
+    private AdminPermissionService permissionService;
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
@@ -46,8 +45,8 @@ class AdminAuthServiceTest {
     void setUp() {
         authService = new AdminAuthService(
                 adminMapper,
-                permissionMapper,
                 sessionService,
+                permissionService,
                 passwordEncoder,
                 jwtUtil,
                 new AuthProperties("test-secret-key-with-at-least-32-bytes", Duration.ofMinutes(30))

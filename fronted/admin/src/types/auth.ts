@@ -33,3 +33,8 @@ export interface MeResult {
   menus: MenuItem[]
   pwdResetRequired: boolean
 }
+
+export interface ChangePasswordParams {
+  oldPassword: string
+  newPassword: string
+}

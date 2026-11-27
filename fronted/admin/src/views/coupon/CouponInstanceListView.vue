@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { ElMessage, ElMessageBox, type FormInstance } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { UserFilled } from '@element-plus/icons-vue'
 
 import { couponApi } from '@/api/coupon'
@@ -118,7 +118,6 @@ async function handleGrant() {
 }
 
 // ===== 冻结 / 解冻 =====
-const freezeFormRef = ref<FormInstance>()
 const freezeVisible = ref(false)
 const freezeId = ref<number | null>(null)
 const freezeReason = ref('')
@@ -218,27 +217,27 @@ onMounted(() => {
         <el-table-column label="会员ID" prop="memberId" width="120" />
         <el-table-column label="来源" prop="source" width="100" />
         <el-table-column label="状态" width="120">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             <el-tag :type="INSTANCE_STATUS_TYPE[row.status]" effect="light">
               {{ INSTANCE_STATUS_LABEL[row.status] }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="面额" width="120">
-          <template #default="{ row }">¥ {{ fenToYuan(row.discountAmount) }}</template>
+          <template #default="{ row }: { row: any }">¥ {{ fenToYuan(row.discountAmount) }}</template>
         </el-table-column>
         <el-table-column label="有效期" min-width="260">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             {{ row.validStart?.replace('T', ' ').slice(0, 16) ?? '-' }}
             ~
             {{ row.validEnd?.replace('T', ' ').slice(0, 16) ?? '-' }}
           </template>
         </el-table-column>
         <el-table-column label="领取时间" prop="receiveTime" width="190">
-          <template #default="{ row }">{{ row.receiveTime?.replace('T', ' ').slice(0, 16) }}</template>
+          <template #default="{ row }: { row: any }">{{ row.receiveTime?.replace('T', ' ').slice(0, 16) }}</template>
         </el-table-column>
         <el-table-column label="操作" width="150" fixed="right">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             <el-button
               size="small"
               type="danger"
@@ -312,7 +311,7 @@ onMounted(() => {
 
     <!-- 冻结原因 弹窗 -->
     <el-dialog v-model="freezeVisible" title="冻结用户券" width="420px">
-      <el-form ref="freezeFormRef" label-width="80px">
+      <el-form label-width="80px">
         <el-form-item label="冻结原因" required>
           <el-input v-model="freezeReason" type="textarea" :rows="3" maxlength="255" show-word-limit placeholder="如：风控异常 / 会员投诉" />
         </el-form-item>

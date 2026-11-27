@@ -119,29 +119,29 @@ onMounted(() => {
         <el-table-column label="叠加组 A" prop="groupA" width="180" />
         <el-table-column label="叠加组 B" prop="groupB" width="180" />
         <el-table-column label="是否允许叠加" width="140">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             <el-tag :type="row.allowStack === 1 ? 'success' : 'info'" effect="light">
               {{ row.allowStack === 1 ? '允许叠加' : '不允许叠加' }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="叠加上限" width="120">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             {{ row.allowStack === 1 ? `最多 ${row.maxStackCount} 张` : '-' }}
           </template>
         </el-table-column>
         <el-table-column label="状态" width="100">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             <el-tag :type="row.status === 1 ? 'success' : 'info'" effect="light">
               {{ row.status === 1 ? '启用' : '停用' }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" prop="createdAt" width="200">
-          <template #default="{ row }">{{ row.createdAt.replace('T', ' ') }}</template>
+          <template #default="{ row }: { row: any }">{{ row.createdAt.replace('T', ' ') }}</template>
         </el-table-column>
         <el-table-column label="操作" width="160" fixed="right">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             <el-button size="small" @click="openEdit(row)">修改</el-button>
             <el-button size="small" type="danger" @click="handleDelete(row)">删除</el-button>
           </template>

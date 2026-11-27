@@ -1,5 +1,5 @@
 import { api } from '@/api/http'
-import type { LoginParams, LoginResult, MeResult } from '@/types/auth'
+import type { ChangePasswordParams, LoginParams, LoginResult, MeResult } from '@/types/auth'
 
 const AUTH_BASE_URL = '/api/v1/admin/auth'
 
@@ -13,4 +13,8 @@ export function getMe(): Promise<MeResult> {
 
 export function logout(): Promise<void> {
   return api.post<void>(`${AUTH_BASE_URL}/logout`)
+}
+
+export function changePassword(params: ChangePasswordParams): Promise<void> {
+  return api.post<void>(`${AUTH_BASE_URL}/password`, params)
 }

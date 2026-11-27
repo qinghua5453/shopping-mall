@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
@@ -12,10 +12,12 @@ import {
   UserFilled,
 } from '@element-plus/icons-vue'
 
+import { changePassword } from '@/api/auth'
 import routerInstance from '@/router'
 import { resetPermissionRoutes } from '@/router/permission'
 import { businessRoutes } from '@/router/routes'
 import { useAuthStore } from '@/stores/auth'
+import { getErrorMessage } from '@/utils/error'
 
 const route = useRoute()
 const router = useRouter()
@@ -31,6 +33,10 @@ function menuPath(path: string): string {
 }
 
 async function handleCommand(command: string): Promise<void> {
+  if (command === 'password') {
+    openChangePwd()
+    return
+  }
   if (command !== 'logout') {
     return
   }
@@ -48,6 +54,45 @@ async function handleCommand(command: string): Promise<void> {
   } finally {
     resetPermissionRoutes(routerInstance)
     await router.replace({ name: 'Login' })
+  }
+}
+
+const pwdVisible = ref(false)
+const pwdLoading = ref(false)
+const pwdForm = reactive({ oldPassword: '', newPassword: '', confirm: '' })
+
+function openChangePwd() {
+  pwdForm.oldPassword = ''
+  pwdForm.newPassword = ''
+  pwdForm.confirm = ''
+  pwdVisible.value = true
+}
+
+async function submitChangePwd() {
+  if (!pwdForm.oldPassword || !pwdForm.newPassword) {
+    ElMessage.warning('请填写原密码与新密码')
+    return
+  }
+  if (pwdForm.newPassword.length < 8) {
+    ElMessage.warning('新密码至少 8 位')
+    return
+  }
+  if (pwdForm.newPassword !== pwdForm.confirm) {
+    ElMessage.warning('两次输入的新密码不一致')
+    return
+  }
+  pwdLoading.value = true
+  try {
+    await changePassword({ oldPassword: pwdForm.oldPassword, newPassword: pwdForm.newPassword })
+    ElMessage.success('密码修改成功，请使用新密码重新登录')
+    pwdVisible.value = false
+    auth.clearSession()
+    resetPermissionRoutes(routerInstance)
+    await router.replace({ name: 'Login' })
+  } catch (err) {
+    ElMessage.error(getErrorMessage(err))
+  } finally {
+    pwdLoading.value = false
   }
 }
 </script>
@@ -104,6 +149,7 @@ async function handleCommand(command: string): Promise<void> {
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item disabled>{{ auth.admin?.username }}</el-dropdown-item>
+              <el-dropdown-item command="password">修改密码</el-dropdown-item>
               <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -113,6 +159,42 @@ async function handleCommand(command: string): Promise<void> {
       <el-main class="admin-main">
         <router-view />
       </el-main>
+
+      <el-dialog v-model="pwdVisible" title="修改密码" width="420px" :close-on-click-modal="false">
+        <el-form label-width="90px">
+          <el-form-item label="原密码">
+            <el-input
+              v-model="pwdForm.oldPassword"
+              type="password"
+              show-password
+              placeholder="请输入原密码"
+              autocomplete="off"
+            />
+          </el-form-item>
+          <el-form-item label="新密码">
+            <el-input
+              v-model="pwdForm.newPassword"
+              type="password"
+              show-password
+              placeholder="至少 8 位"
+              autocomplete="off"
+            />
+          </el-form-item>
+          <el-form-item label="确认密码">
+            <el-input
+              v-model="pwdForm.confirm"
+              type="password"
+              show-password
+              placeholder="再次输入新密码"
+              autocomplete="off"
+            />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <el-button @click="pwdVisible = false">取消</el-button>
+          <el-button type="primary" :loading="pwdLoading" @click="submitChangePwd">确认修改</el-button>
+        </template>
+      </el-dialog>
     </el-container>
   </el-container>
 </template>

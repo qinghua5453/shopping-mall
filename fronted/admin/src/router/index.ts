@@ -66,7 +66,7 @@ router.beforeEach(async (to) => {
   }
 
   if (!permissionRoutesReady()) {
-    registerPermissionRoutes(router, auth.permissions)
+    registerPermissionRoutes(router)
     return { path: to.fullPath, replace: true }
   }
 

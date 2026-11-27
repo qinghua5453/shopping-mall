@@ -1,5 +1,7 @@
 package com.shopmall.controller;
 
+import com.shopmall.annotation.OperationLog;
+import com.shopmall.annotation.RequirePermission;
 import com.shopmall.common.ApiResponse;
 import com.shopmall.dto.CouponGrantRequest;
 import com.shopmall.dto.CouponInstanceFreezeRequest;
@@ -19,6 +21,7 @@ public class CouponInstanceController {
     private final CouponInstanceService instanceService;
 
     @GetMapping
+    @RequirePermission("coupon:instance:view")
     public ApiResponse<PageResult<CouponInstance>> page(
             @RequestParam(required = false) Long memberId,
             @RequestParam(required = false) Long templateId,
@@ -30,6 +33,8 @@ public class CouponInstanceController {
     }
 
     @PostMapping("/{id}/freeze")
+    @RequirePermission("coupon:instance:freeze")
+    @OperationLog(module = "coupon", operation = "冻结用户券")
     public ApiResponse<CouponInstance> freeze(
             @PathVariable Long id,
             @Valid @RequestBody CouponInstanceFreezeRequest req,
@@ -40,6 +45,8 @@ public class CouponInstanceController {
     }
 
     @PostMapping("/{id}/unfreeze")
+    @RequirePermission("coupon:instance:unfreeze")
+    @OperationLog(module = "coupon", operation = "解冻用户券")
     public ApiResponse<CouponInstance> unfreeze(
             @PathVariable Long id,
             HttpServletRequest request
@@ -49,6 +56,8 @@ public class CouponInstanceController {
     }
 
     @PostMapping("/grant")
+    @RequirePermission("coupon:instance:grant")
+    @OperationLog(module = "coupon", operation = "定向发券")
     public ApiResponse<Void> grant(
             @Valid @RequestBody CouponGrantRequest req,
             HttpServletRequest request

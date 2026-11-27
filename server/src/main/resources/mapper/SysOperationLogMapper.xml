@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shopmall.mapper.SysOperationLogMapper">
+
+  <insert id="insert" parameterType="com.shopmall.entity.SysOperationLog" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sys_operation_log
+      (admin_id, username, module, operation, method, path, params, success, error_msg, cost_ms, trace_id, ip, user_agent)
+    VALUES
+      (#{adminId}, #{username}, #{module}, #{operation}, #{method}, #{path}, #{params}, #{success}, #{errorMsg}, #{costMs}, #{traceId}, #{ip}, #{userAgent})
+  </insert>
+
+  <select id="selectPage" resultType="com.shopmall.entity.SysOperationLog">
+    SELECT id, admin_id, username, module, operation, method, path, params, success, error_msg,
+           cost_ms, trace_id, ip, user_agent, created_at
+    FROM sys_operation_log
+    <where>
+      <if test="adminId != null">AND admin_id = #{adminId}</if>
+      <if test="module != null and module != ''">AND module = #{module}</if>
+      <if test="success != null">AND success = #{success}</if>
+      <if test="start != null">AND created_at &gt;= #{start}</if>
+      <if test="end != null">AND created_at &lt;= #{end}</if>
+    </where>
+    ORDER BY id DESC
+    LIMIT #{offset}, #{limit}
+  </select>
+
+  <select id="countPage" resultType="long">
+    SELECT COUNT(*) FROM sys_operation_log
+    <where>
+      <if test="adminId != null">AND admin_id = #{adminId}</if>
+      <if test="module != null and module != ''">AND module = #{module}</if>
+      <if test="success != null">AND success = #{success}</if>
+      <if test="start != null">AND created_at &gt;= #{start}</if>
+      <if test="end != null">AND created_at &lt;= #{end}</if>
+    </where>
+  </select>
+</mapper>

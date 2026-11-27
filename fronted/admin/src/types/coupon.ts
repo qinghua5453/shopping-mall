@@ -70,7 +70,7 @@ export const INSTANCE_STATUS_LABEL: Record<number, string> = {
   5: '已冻结',
 }
 
-export const INSTANCE_STATUS_TYPE: Record<number, string> = {
+export const INSTANCE_STATUS_TYPE: Record<number, 'primary' | 'success' | 'info' | 'warning' | 'danger'> = {
   1: 'success',
   2: 'warning',
   3: 'info',

@@ -23,4 +23,27 @@
       AND r.status = 1
     ORDER BY p.sort, p.id
   </select>
+
+  <select id="selectAll" resultType="com.shopmall.entity.SysPermission">
+    SELECT id, parent_id, permission_type, code, name, route_path, component,
+           api_method, api_path, icon, sort, visible, status, created_at, updated_at
+    FROM sys_permission
+    ORDER BY sort, id
+  </select>
+
+  <select id="selectById" resultType="com.shopmall.entity.SysPermission">
+    SELECT id, parent_id, permission_type, code, name, route_path, component,
+           api_method, api_path, icon, sort, visible, status, created_at, updated_at
+    FROM sys_permission
+    WHERE id = #{id}
+  </select>
+
+  <update id="update" parameterType="com.shopmall.entity.SysPermission">
+    UPDATE sys_permission
+    SET name = #{name},
+        icon = #{icon},
+        sort = #{sort},
+        visible = #{visible}
+    WHERE id = #{id}
+  </update>
 </mapper>

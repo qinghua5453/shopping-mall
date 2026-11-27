@@ -15,12 +15,9 @@ import {
 } from '@/types/coupon'
 import {
   couponTypeLabel,
-  fenToYuan,
   formatCouponRule,
-  formatDiscountRate,
   formatValidity,
   scopeTypeLabel,
-  validityTypeLabel,
 } from '@/utils/coupon'
 import { getErrorMessage } from '@/utils/error'
 
@@ -88,8 +85,8 @@ function defaultForm(): CouponTemplateForm {
     scopeValues: '{}',
     thresholdAmount: 0,
     discountAmount: 0,
-    discountRate: null,
-    maxDiscountAmount: null,
+    discountRate: undefined,
+    maxDiscountAmount: undefined,
     totalQuantity: 100,
     perUserLimit: 1,
     validityType: 2,
@@ -294,8 +291,8 @@ watch(
       }
     } else {
       formRules.discountRate = undefined
-      form.discountRate = null
-      form.maxDiscountAmount = null
+      form.discountRate = undefined
+      form.maxDiscountAmount = undefined
     }
   },
   { immediate: true },
@@ -352,38 +349,38 @@ onMounted(() => {
       <el-table :data="list" v-loading="loading" stripe border size="default">
         <el-table-column label="模板号" prop="templateNo" width="170" fixed />
         <el-table-column label="名称" prop="name" min-width="180">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             <div>{{ row.name }}</div>
             <div class="sub-row" v-if="row.remark">{{ row.remark }}</div>
           </template>
         </el-table-column>
         <el-table-column label="类型" width="90">
-          <template #default="{ row }">{{ couponTypeLabel(row.couponType) }}</template>
+          <template #default="{ row }: { row: any }">{{ couponTypeLabel(row.couponType) }}</template>
         </el-table-column>
         <el-table-column label="优惠规则" min-width="180">
-          <template #default="{ row }">{{ ruleOf(row) }}</template>
+          <template #default="{ row }: { row: any }">{{ ruleOf(row) }}</template>
         </el-table-column>
         <el-table-column label="适用" width="90">
-          <template #default="{ row }">{{ scopeTypeLabel(row.scopeType) }}</template>
+          <template #default="{ row }: { row: any }">{{ scopeTypeLabel(row.scopeType) }}</template>
         </el-table-column>
         <el-table-column label="有效期" min-width="240">
-          <template #default="{ row }">{{ validityOf(row) }}</template>
+          <template #default="{ row }: { row: any }">{{ validityOf(row) }}</template>
         </el-table-column>
         <el-table-column label="库存/已发" width="130">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             <div>{{ row.totalQuantity }}</div>
             <div class="sub-row">已发 {{ row.issuedQuantity }}</div>
           </template>
         </el-table-column>
         <el-table-column label="状态" width="100">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             <el-tag :type="TEMPLATE_STATUS_TYPE[row.status as TemplateStatus]" effect="light">
               {{ TEMPLATE_STATUS_LABEL[row.status as TemplateStatus] }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="300" fixed="right">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             <el-button
               size="small"
               :loading="rowLoading[row.id]"

@@ -44,4 +44,74 @@
     SET last_login_at = #{loginAt}, last_login_ip = #{ip}
     WHERE id = #{id}
   </update>
+
+  <select id="selectPage" resultType="com.shopmall.entity.SysAdmin">
+    SELECT id, username, nickname, avatar_url, email, status,
+           pwd_reset_required, last_login_at, last_login_ip, created_at, updated_at
+    FROM sys_admin
+    <where>
+      <if test="keyword != null and keyword != ''">
+        AND (username LIKE CONCAT('%', #{keyword}, '%') OR nickname LIKE CONCAT('%', #{keyword}, '%'))
+      </if>
+      <if test="status != null">AND status = #{status}</if>
+    </where>
+    ORDER BY id DESC
+    LIMIT #{offset}, #{limit}
+  </select>
+
+  <select id="countPage" resultType="long">
+    SELECT COUNT(*) FROM sys_admin
+    <where>
+      <if test="keyword != null and keyword != ''">
+        AND (username LIKE CONCAT('%', #{keyword}, '%') OR nickname LIKE CONCAT('%', #{keyword}, '%'))
+      </if>
+      <if test="status != null">AND status = #{status}</if>
+    </where>
+  </select>
+
+  <update id="update" parameterType="com.shopmall.entity.SysAdmin">
+    UPDATE sys_admin
+    SET nickname = #{nickname},
+        email = #{email},
+        status = #{status}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updatePassword">
+    UPDATE sys_admin
+    SET password = #{password},
+        pwd_reset_required = #{pwdResetRequired}
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM sys_admin WHERE id = #{id}
+  </delete>
+
+  <select id="selectRoleIds" resultType="long">
+    SELECT role_id FROM sys_admin_role WHERE admin_id = #{adminId}
+  </select>
+
+  <delete id="deleteAdminRoles">
+    DELETE FROM sys_admin_role WHERE admin_id = #{adminId}
+  </delete>
+
+  <insert id="insertAdminRoles">
+    INSERT IGNORE INTO sys_admin_role (admin_id, role_id) VALUES
+    <foreach collection="roleIds" item="rid" separator=",">
+      (#{adminId}, #{rid})
+    </foreach>
+  </insert>
+
+  <select id="countSuperAdmins" resultType="long">
+    SELECT COUNT(DISTINCT ar.admin_id)
+    FROM sys_admin_role ar
+    JOIN sys_role r ON r.id = ar.role_id
+    WHERE r.code = 'SUPER_ADMIN'
+  </select>
+
+  <select id="countByUsername" resultType="long">
+    SELECT COUNT(*) FROM sys_admin WHERE username = #{username}
+    <if test="excludeId != null">AND id != #{excludeId}</if>
+  </select>
 </mapper>

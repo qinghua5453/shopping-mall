@@ -11,19 +11,19 @@ export const businessRoutes: RouteRecordRaw[] = [
   {
     path: 'system/admins',
     name: 'SystemAdmins',
-    component: () => import('@/views/PlaceholderView.vue'),
+    component: () => import('@/views/system/AdminListView.vue'),
     meta: { title: '管理员管理', requiresAuth: true, permission: 'system:admin:view', menu: true },
   },
   {
     path: 'system/roles',
     name: 'SystemRoles',
-    component: () => import('@/views/PlaceholderView.vue'),
+    component: () => import('@/views/system/RoleListView.vue'),
     meta: { title: '角色管理', requiresAuth: true, permission: 'system:role:view', menu: true },
   },
   {
     path: 'system/permissions',
     name: 'SystemPermissions',
-    component: () => import('@/views/PlaceholderView.vue'),
+    component: () => import('@/views/system/PermissionTreeView.vue'),
     meta: {
       title: '权限管理',
       requiresAuth: true,
@@ -34,7 +34,7 @@ export const businessRoutes: RouteRecordRaw[] = [
   {
     path: 'system/logs',
     name: 'SystemLogs',
-    component: () => import('@/views/PlaceholderView.vue'),
+    component: () => import('@/views/system/OperationLogView.vue'),
     meta: { title: '操作日志', requiresAuth: true, permission: 'system:log:view', menu: true },
   },
   {

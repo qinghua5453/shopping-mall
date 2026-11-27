@@ -9,4 +9,10 @@ public interface SysPermissionMapper {
     List<SysPermission> selectAllActive();
 
     List<SysPermission> selectByAdminId(@Param("adminId") Long adminId);
+
+    List<SysPermission> selectAll();
+
+    SysPermission selectById(@Param("id") Long id);
+
+    int update(SysPermission permission);
 }

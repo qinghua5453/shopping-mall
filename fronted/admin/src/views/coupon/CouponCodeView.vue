@@ -185,25 +185,25 @@ onMounted(() => {
         <el-table-column label="批次ID" prop="batchId" width="100" />
         <el-table-column label="模板ID" prop="templateId" width="100" />
         <el-table-column label="状态" width="120">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             <el-tag :type="CODE_STATUS_TYPE[row.status]" effect="light">
               {{ CODE_STATUS_LABEL[row.status] }}
             </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="领用人" width="120">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             {{ row.memberId ?? '-' }}
           </template>
         </el-table-column>
         <el-table-column label="使用时间" prop="usedTime" width="200">
-          <template #default="{ row }">{{ row.usedTime?.replace('T', ' ') ?? '-' }}</template>
+          <template #default="{ row }: { row: any }">{{ row.usedTime?.replace('T', ' ') ?? '-' }}</template>
         </el-table-column>
         <el-table-column label="创建时间" prop="createdAt" width="200">
-          <template #default="{ row }">{{ row.createdAt.replace('T', ' ') }}</template>
+          <template #default="{ row }: { row: any }">{{ row.createdAt.replace('T', ' ') }}</template>
         </el-table-column>
         <el-table-column label="操作" width="120" fixed="right">
-          <template #default="{ row }">
+          <template #default="{ row }: { row: any }">
             <el-button
               size="small"
               type="danger"

@@ -1,8 +1,10 @@
 package com.shopmall.controller;
 
+import com.shopmall.annotation.OperationLog;
 import com.shopmall.common.ApiResponse;
 import com.shopmall.common.BizException;
 import com.shopmall.common.ErrorCode;
+import com.shopmall.dto.ChangePasswordRequest;
 import com.shopmall.dto.LoginRequest;
 import com.shopmall.dto.LoginResponse;
 import com.shopmall.dto.MeResponse;
@@ -50,6 +52,15 @@ public class AdminAuthController {
     public ApiResponse<Void> logout(HttpServletRequest request) {
         String sessionId = (String) request.getAttribute(LoginInterceptor.SESSION_ID_ATTRIBUTE);
         authService.logout(sessionId);
+        return ApiResponse.success(null);
+    }
+
+    @PostMapping("/password")
+    @OperationLog(module = "system", operation = "修改自身密码")
+    public ApiResponse<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request,
+                                            HttpServletRequest servletRequest) {
+        Long adminId = (Long) servletRequest.getAttribute(LoginInterceptor.ADMIN_ID_ATTRIBUTE);
+        authService.changePassword(adminId, request);
         return ApiResponse.success(null);
     }
 }
